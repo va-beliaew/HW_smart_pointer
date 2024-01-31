@@ -6,12 +6,13 @@ namespace std {
         T* ptr = new T;
     public:
         unique_ptr1(const unique_ptr1<T>& ptr1) = delete;
-        unique_ptr1(T*&& ptr_) : ptr(ptr_) {}
+        unique_ptr1(T* ptr_) : ptr(ptr_) {}
         unique_ptr1<T> operator= (const unique_ptr1<T>& ptr1) = delete;
-        T& operator* () {
+        T operator* () {
             return *ptr;
         }
-        T& operator-> () {
+       
+        T* operator-> () {
             return ptr;
         }
         ~unique_ptr1() {
@@ -21,32 +22,39 @@ namespace std {
         T* get() const {
             return ptr;
         }
-        T get_value() const {
-            if (!ptr) {
-                return 0;
-            }
-            else {
-                return *ptr;
-            }
-        }
-        void release(T*& ptrr) {
-            ptrr = ptr;
+       
+        T* release() {
+            T* ptr1 = ptr;
             ptr = nullptr;
+            return ptr1;
 
         }
 
     };
-
 }
+
+class Int {
+public:
+    int k = 0;
+};
+
+class Int2 {
+public:
+    int k = 1;
+};
 
 int main() {
     std::unique_ptr1<int> pi(new int(10));
+    std::unique_ptr1<Int> I(new Int);
+    std::unique_ptr1<Int2> I2(new Int2);
     int* in = nullptr;
-    std::cout << in << ' ' << pi.get() << ' ' << pi.get_value() << std::endl;
-    pi.release(in);
+    std::cout << I->k << std::endl;
+    std::cout << I2->k << std::endl;
+    std::cout << in << ' ' << pi.get() << ' ' << std::endl;
+    in = pi.release();
     *in = 20;
-    std::cout << in << ' ' << *in << ' ';
-     std::cout << pi.get() << ' ' << pi.get_value() << std::endl;
+    std::cout << in << ' ' << *in << ' ' << std::endl;
+     std::cout << pi.get() << ' ' << std::endl;
     *in = 134;
     std::cout << *in << std::endl;
     delete in;
